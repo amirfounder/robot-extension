@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Extension",
+  "version": "0.0.1",
+  "author": "Amir Sharapov",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ],
+  "permissions": [
+    "tabs",
+    "storage",
+    "webRequest",
+    "background",
+    "scripting",
+    "unlimitedStorage"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ]
+}
