@@ -3,12 +3,13 @@ const clickElement = async (element) => {
   const socket = new WebSocketConnection()
   await socket.connect()
 
-  const cleanup = highlightElement(element)
   await socket.sendAsync('screen-capture')
 
-  cleanup()
-  
+  const cleanup = highlightElement(element)
+
   await socket.sendAsync('screen-capture')
+  
+  cleanup()
   
   const response = await socket.sendAsync('compute-difference-between-last-two-images')
   const [x, y] = response
