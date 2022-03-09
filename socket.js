@@ -2,8 +2,6 @@ const isFunction = (value) => typeof (value) == 'function'
 
 class WebSocketConnection {
   constructor() {
-    this.sentMessages = []
-    this.receivedMessages = []
     this.nextMessageId = 1
     this.onMessageReceivedMap = {}
   }
@@ -18,7 +16,7 @@ class WebSocketConnection {
         reject(this.socket)
       }
       this.socket.onmessage = (e) => {
-        const { data, data: { id } } = e;
+        const { data, id } = JSON.parse(e.data)
 
         if (id in this.onMessageReceivedMap) {
           this.onMessageReceivedMap[id](data)
@@ -28,7 +26,7 @@ class WebSocketConnection {
     })
   }
 
-  sendAsync = (messageData, timeoutInterval = 2000) => {
+  sendAsync = (messageData, timeoutInterval = 10000) => {
     return new Promise((resolve, reject) => {
       const message = this.#buildMessage(messageData)
       const messageId = message.id

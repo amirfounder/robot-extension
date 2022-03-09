@@ -12,10 +12,19 @@ const writeHashtag = async () => {
 
   await socket.connect()
 
-  const searchBarBox = getSearchBarBox()
-  const [x, y] = searchBarBox.center
-
   let response;
+
+  response = await socket.sendAsync('screen-capture before')
+
+  const cleanup = highlightElement(searchBoxElement().parentElement)
+
+  response = await socket.sendAsync('screen-capture after')
+
+  cleanup()
+
+  response = await socket.sendAsync('compute-difference-between-last-two-images')
+
+  const [x, y] = response
 
   response = await socket.sendAsync(`mouse-click ${x},${y}`)
 
@@ -31,11 +40,50 @@ const writeHashtag = async () => {
     return
   }
 
-  const hashtags = getHashtagData()
-  socket.send(hashtags)
+  setTimeout(() => {
+    
+    const hashtags = getHashtagData()
+    socket.send(hashtags)
+  
+    socket.close()
+  
+  }, 2000)
 
-  socket.close()
 
+}
+
+const highlightElement = (element) => {
+
+  const styleBackups = []
+
+  const elements = Array.from(element.querySelectorAll('*'))
+
+  elements.forEach((element) => {
+    const styleBackup = {
+      backgroundColor: element.style.backgroundColor,
+      borderColor: element.style.borderColor,
+      color: element.style.color
+    }
+    styleBackups.push(styleBackup)
+    element.style.backgroundColor = 'red';
+    element.style.borderColor = 'red';
+    element.style.color = 'red'
+  })
+
+  const cleanup = () => {
+    elements.forEach((element, index) => {
+      const {
+        backgroundColor,
+        borderColor,
+        color
+      } = styleBackups[index]
+      element.style.backgroundColor = backgroundColor;
+      element.style.borderColor = borderColor;
+      element.style.color = color;
+    })
+  }
+
+  return cleanup
 }
 
 const getHashtagData = () => {
@@ -49,33 +97,4 @@ const getHashtagData = () => {
       postsCount
     }
   })
-}
-
-const getSearchBarBox = () => {
-  return getElementBox(searchBoxElement())
-}
-
-const getElementBox = (element) => {
-  const _screenWidth = window.screen.width
-  const _screenHeight = window.screen.height
-  const _docWidth = window.document.documentElement.clientWidth
-  const _docHeight = window.document.documentElement.clientHeight
-  const _eleRect = element.getBoundingClientRect()
-
-  const _xOffset = 40
-  const _yOffset = _screenHeight - _docHeight
-
-  const _x = _eleRect.x + _xOffset
-  const _y = _eleRect.y + _yOffset
-
-  return {
-    x: _x,
-    y: _y,
-    width: _eleRect.width,
-    height: _eleRect.height,
-    center: [
-      _x + (_eleRect.width / 2),
-      _y + (_eleRect.height / 2)
-    ]
-  }
 }
