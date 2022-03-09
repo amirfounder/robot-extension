@@ -1,3 +1,5 @@
+const searchBoxElement = () => document.querySelector('input[aria-label="Search Input"]')
+
 chrome.runtime.onMessage.addListener((request, sender, sendMessage) => {
   if (request?.method == 'writeHashtag') {
     writeHashtag()
@@ -44,7 +46,7 @@ const getHashtagData = () => {
 }
 
 const getSearchBarBox = () => {
-  return getElementBox(document.querySelector('input[aria-label="Search Input"]'))
+  return getElementBox(searchBoxElement())
 }
 
 const getElementBox = (element) => {
