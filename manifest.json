@@ -6,6 +6,9 @@
   "action": {
     "default_popup": "popup.html"
   },
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": [
@@ -13,7 +16,10 @@
       ],
       "js": [
         "content.js",
-        "socket.js"
+        "socket.js",
+        "tasks/instagram_hashtags.js",
+        "tasks/instagram_login.js",
+        "utils.js"
       ]
     }
   ],
