@@ -14,11 +14,11 @@ const writeHashtag = async () => {
 
   let response;
 
-  response = await socket.sendAsync('screen-capture before')
+  response = await socket.sendAsync('screen-capture')
 
   const cleanup = highlightElement(searchBoxElement().parentElement)
 
-  response = await socket.sendAsync('screen-capture after')
+  response = await socket.sendAsync('screen-capture')
 
   cleanup()
 

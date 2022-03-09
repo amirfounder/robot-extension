@@ -1,5 +1,3 @@
-const isFunction = (value) => typeof (value) == 'function'
-
 class WebSocketConnection {
   constructor() {
     this.nextMessageId = 1
