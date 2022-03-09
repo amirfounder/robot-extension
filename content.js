@@ -6,30 +6,36 @@ chrome.runtime.onMessage.addListener((request, sender, sendMessage) => {
   }
 })
 
-const writeHashtag = () => {
-  const socket = new WebSocket('ws://127.0.0.1:8001')
-  socket.onopen = async () => {
-
-    const searchBarBox = getSearchBarBox();
-    const [x, y] = searchBarBox.center
+const writeHashtag = async () => {
   
-    let messagesReceived = 0;
+  const socket = new WebSocketConnection()
 
-    socket.onmessage = (e) => {
-      if (messagesReceived === 0) {
-        messagesReceived ++
-        console.log('response received!', e)
-        socket.send(`keyboard-write "#testing"`)
-        setTimeout(() => {
-          const data = getHashtagData()
-          socket.send(JSON.stringify(data))
-        }, 1000)
-      }
-    }
-    
-    socket.send(`mouse-click ${x},${y}`)
+  await socket.connect()
 
+  const searchBarBox = getSearchBarBox()
+  const [x, y] = searchBarBox.center
+
+  let response;
+
+  response = await socket.sendAsync(`mouse-click ${x},${y}`)
+
+  if (!response.toUpperCase().includes('SUCCESS')) {
+    console.error(response)
+    return
   }
+
+  response = await socket.sendAsync(`keyboard-write "#testing"`)
+
+  if (!response.toUpperCase().includes('SUCCESS')) {
+    console.error(response)
+    return
+  }
+
+  const hashtags = getHashtagData()
+  socket.send(hashtags)
+
+  socket.close()
+
 }
 
 const getHashtagData = () => {
@@ -56,7 +62,7 @@ const getElementBox = (element) => {
   const _docHeight = window.document.documentElement.clientHeight
   const _eleRect = element.getBoundingClientRect()
 
-  const _xOffset = _docWidth * .04
+  const _xOffset = 40
   const _yOffset = _screenHeight - _docHeight
 
   const _x = _eleRect.x + _xOffset

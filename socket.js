@@ -28,7 +28,7 @@ class WebSocketConnection {
     })
   }
 
-  sendMessageAsync = (messageData, timeoutInterval = 2000) => {
+  sendAsync = (messageData, timeoutInterval = 2000) => {
     return new Promise((resolve, reject) => {
       const message = this.#buildMessage(messageData)
       const messageId = message.id
@@ -51,8 +51,12 @@ class WebSocketConnection {
     })
   }
 
-  sendMessage = (messageData) => {
+  send = (messageData) => {
     this.socket.send(JSON.stringify(this.#buildMessage(messageData)))
+  }
+
+  close = () => {
+    this.socket.close
   }
 
   #buildMessage = (messageData) => ({
