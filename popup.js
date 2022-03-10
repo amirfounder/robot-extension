@@ -1,7 +1,9 @@
 const writeHashtagsButton = document.querySelector('#write-hashtags-button')
 const writeHashtagsInput = document.querySelector('#write-hashtags-input')
-const newTabButton = document.querySelector('#new-tab-button')
+const visitInstagramButton = document.querySelector('#visit-instagram-button')
+const visitGoogleAccountsButton = document.querySelector('#visit-google-accounts-button')
 const loginButton = document.querySelector('#login-button')
+const createGoogleAccountButton = document.querySelector('#create-google-account-button')
 
 writeHashtagsButton.addEventListener('click', async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -13,6 +15,15 @@ loginButton.addEventListener('click', async () => {
   chrome.tabs.sendMessage(tab.id, { method: 'login' })
 })
 
-newTabButton.addEventListener('click', () => {
-  chrome.runtime.sendMessage({ method: 'newTab' })
+visitInstagramButton.addEventListener('click', () => {
+  chrome.runtime.sendMessage({ method: 'newTab', url: 'https://www.instagram.com' })
+})
+
+visitGoogleAccountsButton.addEventListener('click', () => {
+  chrome.runtime.sendMessage({ method: 'newTab', url: 'https://accounts.google.com' })
+})
+
+createGoogleAccountButton.addEventListener('click', async () => {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.tabs.sendMessage(tab.id, { method: 'googleCreateAccount' })
 })

@@ -1,12 +1,12 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.method == 'newTab') {
-    newTab()
+    navigateToUrl(message?.url)
   }
 })
 
-const newTab = async (url=null) => {
-  console.log('opening tab')
+const navigateToUrl = async (url) => {
   chrome.tabs.create({
-    active: true
+    active: true,
+    url
   })
 }

@@ -19,6 +19,8 @@
         "socket.js",
         "tasks/instagram_hashtags.js",
         "tasks/instagram_login.js",
+        "tasks/google_login.js",
+        "tasks/google_create_account.js",
         "utils.js"
       ]
     }
