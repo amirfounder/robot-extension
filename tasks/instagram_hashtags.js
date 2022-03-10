@@ -25,10 +25,13 @@ const writeHashtag = async () => {
   setTimeout(() => {
     
     const hashtags = getHashtagData()
-    
+
     socket.send(hashtags)
-    socket.close()
   
   }, 1000)
+}
 
+
+const queryHashtagsTask = () => {
+  console.log('triggered the queryHashtagsTask task ...')
 }

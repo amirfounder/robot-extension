@@ -16,17 +16,20 @@ class WebSocketConnection {
 
     this.socket.onopen = () => {
       this.isConnected = true;
+      this.send('hello') // initial message is the id of this connection in server
       if (this.isWaitedOnUntilConnected) {
         this.resolveWaitedUntilConnectedCallback()
       }
     }
 
     this.socket.onmessage = (e) => {
-      const { data, id } = JSON.parse(e.data)
-      if (id in this.onMessageReceivedMap) {
-        this.onMessageReceivedMap[id](data)
-        delete this.onMessageReceivedMap[id]
+      const message = JSON.parse(e.data)
+
+      if (message.requestId in this.onMessageReceivedMap) {
+        this.onMessageReceivedMap[message.requestId](message.data)
+        delete this.onMessageReceivedMap[message.requestId]
       }
+      this.#handleMessage(message)
     }
 
     return this
@@ -96,6 +99,21 @@ class WebSocketConnection {
     const nextMessageId = this.nextMessageId
     this.nextMessageId++
     return nextMessageId
+  }
+
+  #handleMessage = (message) => {
+    const {
+      requestId,
+      method,
+      data
+    } = message
+
+    if (method === 'start-task') {
+      const taskName = data?.taskName
+      if (taskName == 'query-hashtags') {
+        queryHashtagsTask();
+      }
+    }
   }
 }
 
