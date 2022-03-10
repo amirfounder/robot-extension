@@ -1,8 +1,5 @@
 const clickElement = async (element) => {
-
-  const socket = new WebSocketConnection()
-  await socket.connect()
-
+  await socket.waitUntilConnected()
   await socket.sendAsync('screen-capture')
 
   const cleanup = highlightElement(element)
@@ -15,25 +12,21 @@ const clickElement = async (element) => {
   const [x, y] = response
 
   await socket.sendAsync(`mouse-click ${x},${y}`)
-
-  socket.close()
-
 }
 
 
 const highlightElement = (element) => {
   console.log('highlighting element ...')
-  const styleBackups = []
 
+  const styleBackups = []
   const elements = Array.from(element.querySelectorAll('*'))
 
   elements.forEach((element) => {
-    const styleBackup = {
+    styleBackups.push({
       backgroundColor: element.style.backgroundColor,
       borderColor: element.style.borderColor,
       color: element.style.color
-    }
-    styleBackups.push(styleBackup)
+    })
     element.style.backgroundColor = 'red';
     element.style.borderColor = 'red';
     element.style.color = 'red'
@@ -42,16 +35,16 @@ const highlightElement = (element) => {
   const cleanup = () => {
     console.log('cleaning up element ...')
     elements.forEach((element, index) => {
-      const {
-        backgroundColor,
-        borderColor,
-        color
-      } = styleBackups[index]
-      element.style.backgroundColor = backgroundColor;
-      element.style.borderColor = borderColor;
-      element.style.color = color;
+      element.style.backgroundColor = styleBackups[index].backgroundColor;
+      element.style.borderColor = styleBackups[index].borderColor;
+      element.style.color = styleBackups[index].color;
     })
   }
 
   return cleanup
+}
+
+const getCurrentTab = async () => {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  return tab
 }

@@ -3,7 +3,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendMessage) => {
     writeHashtag()
   }
   if (request?.method == 'login') {
-    login()
+    instagramLogin()
   }
   if (request?.method == 'googleCreateAccount') {
     googleCreateAccount()

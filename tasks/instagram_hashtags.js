@@ -16,46 +16,19 @@ const getHashtagData = () => {
 
 const writeHashtag = async () => {
   
-  const socket = new WebSocketConnection()
+  await socket.waitUntilConnected()
 
-  await socket.connect()
+  await clickElement(searchBoxElement().parentElement)
 
-  let response;
-
-  response = await socket.sendAsync('screen-capture')
-
-  const cleanup = highlightElement(searchBoxElement().parentElement)
-
-  response = await socket.sendAsync('screen-capture')
-
-  cleanup()
-
-  response = await socket.sendAsync('compute-difference-between-last-two-images')
-
-  const [x, y] = response
-
-  response = await socket.sendAsync(`mouse-click ${x},${y}`)
-
-  if (!response.toUpperCase().includes('SUCCESS')) {
-    console.error(response)
-    return
-  }
-
-  response = await socket.sendAsync(`keyboard-write "#testing"`)
-
-  if (!response.toUpperCase().includes('SUCCESS')) {
-    console.error(response)
-    return
-  }
+  await socket.sendAsync(`keyboard-write "#testing"`)
 
   setTimeout(() => {
     
     const hashtags = getHashtagData()
+    
     socket.send(hashtags)
-  
     socket.close()
   
-  }, 2000)
-
+  }, 1000)
 
 }

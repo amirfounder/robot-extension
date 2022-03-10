@@ -5,13 +5,15 @@ const visitGoogleAccountsButton = document.querySelector('#visit-google-accounts
 const loginButton = document.querySelector('#login-button')
 const createGoogleAccountButton = document.querySelector('#create-google-account-button')
 
+
+
 writeHashtagsButton.addEventListener('click', async () => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const tab = await getCurrentTab()
   chrome.tabs.sendMessage(tab.id, { method: 'writeHashtag' })
 })
 
 loginButton.addEventListener('click', async () => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const tab = await getCurrentTab()
   chrome.tabs.sendMessage(tab.id, { method: 'login' })
 })
 
@@ -24,6 +26,6 @@ visitGoogleAccountsButton.addEventListener('click', () => {
 })
 
 createGoogleAccountButton.addEventListener('click', async () => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const tab = await getCurrentTab()
   chrome.tabs.sendMessage(tab.id, { method: 'googleCreateAccount' })
 })
