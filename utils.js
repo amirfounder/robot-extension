@@ -48,3 +48,24 @@ const getCurrentTab = async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   return tab
 }
+
+const waitUntilElementRenders = async (elementQuery, timeoutInterval = 5000) => {
+  return new Promise((resolve, reject) => {
+    let checkForElementIterationCount = 0
+    const maxIterationsCount = timeoutInterval / 100
+    const checkForElement = () => {
+      setTimeout(() => {
+        const element = elementQuery()
+        if (element) {
+          resolve(element)
+        } else {
+          if (checkForElementIterationCount < maxIterationsCount) {
+            checkForElement()
+          } else {
+            reject('Could not find element ...')
+          }
+        }
+      }, 100)
+    }
+  }) 
+}
