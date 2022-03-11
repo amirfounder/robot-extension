@@ -9,7 +9,7 @@ class WebSocketConnection {
   }
 
   connect = () => {
-    console.log('connecting ...')
+    log('connecting ...')
 
     this.isConnected = false
     this.socket = new WebSocket('ws://127.0.0.1:8001');
@@ -49,6 +49,7 @@ class WebSocketConnection {
 
       setTimeout(() => {
         if (!this.isConnected && this.isWaitedOnUntilConnected) {
+          log('Connection timed out ...')
           reject('Connection timed out ...')
         }
       }, timeoutInterval)
@@ -57,7 +58,7 @@ class WebSocketConnection {
 
 
   sendAsync = (messageData, timeoutInterval = 5000) => {
-    console.log(`sending async message ... ${messageData}`)
+    log(`sending async message ... ${messageData}`)
 
     return new Promise((resolve, reject) => {
       const message = this.#buildMessage(messageData)
@@ -66,7 +67,7 @@ class WebSocketConnection {
       let messageReceived = false
 
       const onMessageReceived = (messageData) => {
-        console.log('Message response received ...')
+        log('Message response received ...')
         messageReceived = true;
         resolve(messageData)
       }
@@ -76,6 +77,7 @@ class WebSocketConnection {
       this.socket.send(JSON.stringify(message))
       setTimeout(() => {
         if (!messageReceived) {
+          log('Message response timed out. No message response received ...')
           reject('Message response timed out. No message response received ...')
         }
       }, timeoutInterval)
@@ -101,7 +103,8 @@ class WebSocketConnection {
     return nextMessageId
   }
 
-  #handleMessage = (message) => {
+  #handleMessage = async (message) => {
+    log('Handing message ... ' + JSON.stringify(message))
     const {
       requestId,
       method,
@@ -111,7 +114,7 @@ class WebSocketConnection {
     if (method === 'start-task') {
       const taskName = data?.taskName
       if (taskName == 'query-hashtags') {
-        queryHashtagsTask();
+        await queryHashtagsTask();
       }
     }
   }

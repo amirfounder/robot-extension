@@ -16,12 +16,13 @@
       ],
       "js": [
         "content.js",
-        "socket.js",
-        "tasks/instagram_hashtags.js",
-        "tasks/instagram_login.js",
-        "tasks/google_login.js",
-        "tasks/google_create_account.js",
-        "utils.js"
+        "content/tasks/google_create_account.js",
+        "content/tasks/google_login.js",
+        "content/tasks/instagram_hashtags.js",
+        "content/tasks/instagram_login.js",
+        "content/logging.js",
+        "content/socket.js",
+        "content/utils.js"
       ]
     }
   ],

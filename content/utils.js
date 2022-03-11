@@ -14,7 +14,6 @@ const clickElement = async (element) => {
   await socket.sendAsync(`mouse-click ${x},${y}`)
 }
 
-
 const highlightElement = (element) => {
   console.log('highlighting element ...')
 
@@ -44,12 +43,7 @@ const highlightElement = (element) => {
   return cleanup
 }
 
-const getCurrentTab = async () => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  return tab
-}
-
-const waitUntilElementRenders = async (elementQuery, timeoutInterval = 5000) => {
+const waitUntilElementRenders = (elementQuery, timeoutInterval = 5000) => {
   return new Promise((resolve, reject) => {
     let checkForElementIterationCount = 0
     const maxIterationsCount = timeoutInterval / 100

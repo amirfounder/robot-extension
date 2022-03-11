@@ -15,6 +15,8 @@ const getHashtagData = () => {
 }
 
 const writeHashtag = async (hashtagValue) => {
+  log('write hashtggs method called')
+  debugger
 
   await socket.waitUntilConnected()
   const element = await waitUntilElementRenders(() => searchBoxElement().parentElement)
@@ -50,5 +52,6 @@ const navigateToUrl = async () => {
 const queryHashtagsTask = async () => {
   console.log('triggered the queryHashtagsTask task ...')
   await navigateToUrl('https://www.instagram.com')
+  log('begun writing hashtags ...')
   writeHashtag('test')
 }
