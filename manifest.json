@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "author": "Amir Sharapov",
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup/popup.html"
   },
   "background": {
     "service_worker": "background.js"

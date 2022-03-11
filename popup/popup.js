@@ -5,7 +5,10 @@ const visitGoogleAccountsButton = document.querySelector('#visit-google-accounts
 const loginButton = document.querySelector('#login-button')
 const createGoogleAccountButton = document.querySelector('#create-google-account-button')
 
-
+const getCurrentTab = async () => {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+  return tab
+}
 
 writeHashtagsButton.addEventListener('click', async () => {
   const tab = await getCurrentTab()

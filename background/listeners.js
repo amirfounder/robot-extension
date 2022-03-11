@@ -1,22 +1,17 @@
-chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, sender, _sendResponse) => {
   const {
     method,
-    url,
     message: log_message
   } = message
 
-  if (method == 'newTab') {
-    navigateToUrl(url)
-  }
-  if (method == 'navigate_to_url') {
-    navigateToUrl(url)
-  }
   if (method == 'log') {
-    console.log(log_message)
+    log(log_message)
   }
 
+  if (method == 'self-destruct') {
+    log(`Request received to remove tab with id : ${sender?.tab?.id}`)
+    chrome.tabs.remove(sender?.tab?.id)
+  }
 })
 
-chrome.tabs.onCreated.addListener((tab) => {
-  tabs.push(tab)
-})
+const log = (message) => { console.log(new Date().toISOString() + ' : ' + message) }

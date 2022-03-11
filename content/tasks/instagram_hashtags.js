@@ -16,7 +16,8 @@ const getHashtagData = () => {
 
 const writeHashtag = async (hashtagValue) => {
   log('write hashtggs method called')
-  debugger
+
+  selfDestruct()
 
   await socket.waitUntilConnected()
   const element = await waitUntilElementRenders(() => searchBoxElement().parentElement)
@@ -31,27 +32,8 @@ const writeHashtag = async (hashtagValue) => {
   }, 1000)
 }
 
-
-const navigateToUrl = async () => {
-  return new Promise((resolve, reject) => {
-    const message = { method: 'navigate_to_url', url: 'https://www.instagram.com' }
-    const callback = (response) => {
-      console.log(response)
-      resolve()
-      // if (response == 'SUCCESS') {
-      //   resolve()
-      // } else {
-      //   reject('Received response but it was not a success')
-      // }
-    }
-    chrome.runtime.sendMessage(message, callback)
-  })
-}
-
-
 const queryHashtagsTask = async () => {
-  console.log('triggered the queryHashtagsTask task ...')
-  await navigateToUrl('https://www.instagram.com')
+  log('triggered the queryHashtagsTask task ...')
   log('begun writing hashtags ...')
   writeHashtag('test')
 }

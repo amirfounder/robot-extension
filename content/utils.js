@@ -63,3 +63,8 @@ const waitUntilElementRenders = (elementQuery, timeoutInterval = 5000) => {
     }
   }) 
 }
+
+const selfDestruct = () => {
+  socket.close(1000)
+  chrome.runtime.sendMessage({ method: 'self-destruct' })
+}

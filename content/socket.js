@@ -1,6 +1,6 @@
 class WebSocketConnection {
   constructor() {
-    this.socket = null
+    this.connection = null
     this.nextMessageId = 1
     this.onMessageReceivedMap = {}
     this.isConnected = false
@@ -12,17 +12,17 @@ class WebSocketConnection {
     log('connecting ...')
 
     this.isConnected = false
-    this.socket = new WebSocket('ws://127.0.0.1:8001');
+    this.connection = new WebSocket('ws://127.0.0.1:8001');
 
-    this.socket.onopen = () => {
+    this.connection.onopen = () => {
       this.isConnected = true;
-      this.send('hello') // initial message is the id of this connection in server
+      this.send(document.location.href)
       if (this.isWaitedOnUntilConnected) {
         this.resolveWaitedUntilConnectedCallback()
       }
     }
 
-    this.socket.onmessage = (e) => {
+    this.connection.onmessage = (e) => {
       const message = JSON.parse(e.data)
 
       if (message.requestId in this.onMessageReceivedMap) {
@@ -30,6 +30,10 @@ class WebSocketConnection {
         delete this.onMessageReceivedMap[message.requestId]
       }
       this.#handleMessage(message)
+    }
+
+    this.connection.onclose = () => {
+      this.isConnected = false;
     }
 
     return this
@@ -74,7 +78,7 @@ class WebSocketConnection {
 
       this.onMessageReceivedMap[messageId] = onMessageReceived
 
-      this.socket.send(JSON.stringify(message))
+      this.connection.send(JSON.stringify(message))
       setTimeout(() => {
         if (!messageReceived) {
           log('Message response timed out. No message response received ...')
@@ -85,11 +89,11 @@ class WebSocketConnection {
   }
 
   send = (messageData) => {
-    this.socket.send(JSON.stringify(this.#buildMessage(messageData)))
+    this.connection.send(JSON.stringify(this.#buildMessage(messageData)))
   }
 
-  close = () => {
-    this.socket.close
+  close = (...args) => {
+    this.connection.close(...args)
   }
 
   #buildMessage = (messageData) => ({
