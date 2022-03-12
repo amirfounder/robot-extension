@@ -5,7 +5,7 @@ class WebSocketConnection {
     this.onMessageReceivedMap = {}
     this.isConnected = false
     this.isWaitedOnUntilConnected = false
-    this.isWaitedOnForConnectionOnConnect = null
+    this.resolveWaitedUntilConnectedCallback = null
   }
 
   connect = () => {
@@ -25,14 +25,14 @@ class WebSocketConnection {
       }
     }
 
-    this.connection.onmessage = (e) => {
+    this.connection.onmessage = async (e) => {
       const message = JSON.parse(e.data)
 
       if (message.requestId in this.onMessageReceivedMap) {
         this.onMessageReceivedMap[message.requestId](message.data)
         delete this.onMessageReceivedMap[message.requestId]
       }
-      this.#handleMessage(message)
+      await this.#handleMessage(message)
     }
 
     this.connection.onclose = () => {
@@ -65,8 +65,6 @@ class WebSocketConnection {
 
 
   sendAsync = (messageData, timeoutInterval = 5000) => {
-    log(`sending async message ... ${messageData}`)
-
     return new Promise((resolve, reject) => {
       const message = this.#buildMessage(messageData)
       const messageId = message.id
@@ -81,6 +79,7 @@ class WebSocketConnection {
 
       this.onMessageReceivedMap[messageId] = onMessageReceived
 
+      log(`sending async message ... ${JSON.stringify(message)}`)
       this.connection.send(JSON.stringify(message))
       setTimeout(() => {
         if (!messageReceived) {
@@ -113,8 +112,8 @@ class WebSocketConnection {
   #handleMessage = async (message) => {
     log('Handing message ... ' + JSON.stringify(message))
 
-    if (message?.method === 'start-task') {
-      handleTaskRequest(message)
+    if (message?.data?.method === 'start-task') {
+      await handleTaskRequest(message?.data)
     }
   }
 }

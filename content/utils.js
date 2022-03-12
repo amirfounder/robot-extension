@@ -5,24 +5,37 @@ const log = (message) => {
   })
 }
 
+const delay = (ms = 500) => new Promise((resolve) => {
+  log('starting timer ...')
+  setTimeout(() => {
+    log('timing out ...')
+    resolve()
+  }, ms)
+})
+
 const clickElement = async (element) => {
   await socket.waitUntilConnected()
-  await socket.sendAsync('screen-capture')
 
+  await socket.sendAsync({ method: 'screen-capture' })
+  
   const cleanup = highlightElement(element)
 
-  await socket.sendAsync('screen-capture')
+  await delay(100)
   
+  await socket.sendAsync({ method: 'screen-capture' })
+  
+  await delay(200)
+
   cleanup()
-  
-  const response = await socket.sendAsync('compute-difference-between-last-two-images')
+
+  const response = await socket.sendAsync({ method: 'compute-difference-between-last-two-images' })
   const [x, y] = response
 
-  await socket.sendAsync(`mouse-click ${x},${y}`)
+  await socket.sendAsync({ method: 'mouse-click', coordinates: [x, y] })
 }
 
 const highlightElement = (element) => {
-  console.log('highlighting element ...')
+  log('highlighting element ...')
 
   const styleBackups = []
   const elements = Array.from(element.querySelectorAll('*'))
@@ -39,7 +52,7 @@ const highlightElement = (element) => {
   })
 
   const cleanup = () => {
-    console.log('cleaning up element ...')
+    log('cleaning up element ...')
     elements.forEach((element, index) => {
       element.style.backgroundColor = styleBackups[index].backgroundColor;
       element.style.borderColor = styleBackups[index].borderColor;
@@ -51,6 +64,7 @@ const highlightElement = (element) => {
 }
 
 const waitUntilElementRenders = (elementQuery, timeoutInterval = 5000) => {
+  log('waitUntilElementRenders called!')
   return new Promise((resolve, reject) => {
     let checkForElementIterationCount = 0
     const maxIterationsCount = timeoutInterval / 100
@@ -68,7 +82,7 @@ const waitUntilElementRenders = (elementQuery, timeoutInterval = 5000) => {
         }
       }, 100)
     }
-  }) 
+  })
 }
 
 const selfDestruct = () => {

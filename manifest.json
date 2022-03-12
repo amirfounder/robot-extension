@@ -15,14 +15,14 @@
         "<all_urls>"
       ],
       "js": [
+        "content/utils.js",
         "content.js",
         "content/tasks/google_create_account.js",
         "content/tasks/google_login.js",
         "content/tasks/instagram_hashtags.js",
         "content/tasks/instagram_login.js",
         "content/task_controller.js",
-        "content/socket.js",
-        "content/utils.js"
+        "content/socket.js"
       ]
     }
   ],

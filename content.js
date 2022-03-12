@@ -1,6 +1,6 @@
-chrome.runtime.onMessage.addListener((request, sender, sendMessage) => {
+chrome.runtime.onMessage.addListener(async (request, sender, sendMessage) => {
   if (request?.method == 'writeHashtag') {
-    writeHashtag('test')
+    await writeHashtag('#test')
   }
   if (request?.method == 'login') {
     instagramLogin()

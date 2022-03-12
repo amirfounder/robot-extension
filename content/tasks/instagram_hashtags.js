@@ -16,11 +16,10 @@ const getHashtagData = () => {
 
 const writeHashtag = async (hashtagValue) => {
   log('write hashtags method called')
-
   await socket.waitUntilConnected()
-  const element = await waitUntilElementRenders(() => searchBoxElement().parentElement)
+  const element = searchBoxElement().parentElement
   await clickElement(element)
-  await socket.sendAsync(`keyboard-write "#${hashtagValue}"`)
+  await socket.sendAsync({method: 'keyboard-write', content: hashtagValue})
 
   setTimeout(async () => {
 
