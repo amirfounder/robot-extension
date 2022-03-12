@@ -15,22 +15,14 @@ const delay = (ms = 500) => new Promise((resolve) => {
 
 const clickElement = async (element) => {
   await socket.waitUntilConnected()
-
   await socket.sendAsync({ method: 'screen-capture' })
-  
   const cleanup = highlightElement(element)
-
-  await delay(100)
-  
+  await delay(250)
   await socket.sendAsync({ method: 'screen-capture' })
-  
-  await delay(200)
-
+  await delay(250)
   cleanup()
-
   const response = await socket.sendAsync({ method: 'compute-difference-between-last-two-images' })
   const [x, y] = response
-
   await socket.sendAsync({ method: 'mouse-click', coordinates: [x, y] })
 }
 

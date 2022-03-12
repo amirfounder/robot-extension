@@ -1,5 +1,41 @@
 const searchBoxElement = () => document.querySelector('input[aria-label="Search Input"]')
 
+const getHashtagRecommendations = async (startingHashtag = '#oops') => {
+  log('getHashtagRecommendations ...')
+  writeHashtags(startingHashtag)
+}
+
+const writeHashtags = async (startinghashtag) => {
+  try {
+
+    log('writeHashtags method called');
+    let hashtags
+  
+    await socket.waitUntilConnected()
+    const element = searchBoxElement().parentElement
+    await clickElement(element)
+  
+    await writeHashtag(startinghashtag)
+    await delay(1000)
+    hashtags = getHashtagData()
+    await saveHashtags(hashtags)
+    await clearHashtagSearch(startinghashtag)
+  
+    for (const { hashtag } of hashtags) {
+  
+      await writeHashtag(hashtag)
+      await delay(1000)
+      hashtags = getHashtagData()
+      await saveHashtags(hashtags)
+      await clearHashtagSearch(hashtag)
+  
+    }
+
+  } catch (error) {
+    log(error)
+    throw error
+  }
+}
 
 const getHashtagData = () => {
   const results = Array.from(document.querySelector('.fuqBx, .c7DD5').children)
@@ -14,22 +50,25 @@ const getHashtagData = () => {
   })
 }
 
-const writeHashtag = async (hashtagValue) => {
-  log('write hashtags method called')
-  await socket.waitUntilConnected()
-  const element = searchBoxElement().parentElement
-  await clickElement(element)
-  await socket.sendAsync({method: 'keyboard-write', content: hashtagValue})
-
-  setTimeout(async () => {
-
-    const hashtags = getHashtagData()
-    await socket.send(hashtags)
-
-  }, 1000)
+const clearHashtagSearch = async (hashtag) => {
+  await socket.sendAsync({
+    method: 'keyboard-backspace',
+    count: hashtag.length
+  })
 }
 
-const getHashtagRecommendations = async (startingHashtag = '#oops') => {
-  log('getHashtagRecommendations ...')
-  writeHashtag(startingHashtag)
+const saveHashtags = async (hashtags) => {
+  await socket.send({
+    method: 'save-data',
+    data: hashtags,
+    metadata: { count: hashtags.length }
+  })
+}
+
+const writeHashtag = async (hashtag) => {
+  await socket.sendAsync({
+    method: 'keyboard-write',
+    content: hashtag
+  })
+  await delay(1000)
 }
