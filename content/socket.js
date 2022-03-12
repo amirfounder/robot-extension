@@ -16,7 +16,10 @@ class WebSocketConnection {
 
     this.connection.onopen = () => {
       this.isConnected = true;
-      this.send(document.location.href)
+      this.send({
+        method: 'register-connection',
+        url: document.location.href
+      })
       if (this.isWaitedOnUntilConnected) {
         this.resolveWaitedUntilConnectedCallback()
       }
@@ -109,17 +112,9 @@ class WebSocketConnection {
 
   #handleMessage = async (message) => {
     log('Handing message ... ' + JSON.stringify(message))
-    const {
-      requestId,
-      method,
-      data
-    } = message
 
-    if (method === 'start-task') {
-      const taskName = data?.taskName
-      if (taskName == 'query-hashtags') {
-        await queryHashtagsTask();
-      }
+    if (message?.method === 'start-task') {
+      handleTaskRequest(message)
     }
   }
 }

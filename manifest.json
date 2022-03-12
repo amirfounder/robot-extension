@@ -20,7 +20,7 @@
         "content/tasks/google_login.js",
         "content/tasks/instagram_hashtags.js",
         "content/tasks/instagram_login.js",
-        "content/logging.js",
+        "content/task_controller.js",
         "content/socket.js",
         "content/utils.js"
       ]

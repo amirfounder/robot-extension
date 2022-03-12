@@ -1,3 +1,10 @@
+const log = (message) => {
+  chrome.runtime.sendMessage(message = {
+    method: 'log',
+    message
+  })
+}
+
 const clickElement = async (element) => {
   await socket.waitUntilConnected()
   await socket.sendAsync('screen-capture')
@@ -65,6 +72,10 @@ const waitUntilElementRenders = (elementQuery, timeoutInterval = 5000) => {
 }
 
 const selfDestruct = () => {
+  socket.send({
+    method: 'unregister-connection',
+    url: document.location.href
+  })
   socket.close(1000)
   chrome.runtime.sendMessage({ method: 'self-destruct' })
 }

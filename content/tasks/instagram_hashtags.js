@@ -15,9 +15,7 @@ const getHashtagData = () => {
 }
 
 const writeHashtag = async (hashtagValue) => {
-  log('write hashtggs method called')
-
-  selfDestruct()
+  log('write hashtags method called')
 
   await socket.waitUntilConnected()
   const element = await waitUntilElementRenders(() => searchBoxElement().parentElement)
@@ -32,8 +30,7 @@ const writeHashtag = async (hashtagValue) => {
   }, 1000)
 }
 
-const queryHashtagsTask = async () => {
-  log('triggered the queryHashtagsTask task ...')
-  log('begun writing hashtags ...')
-  writeHashtag('test')
+const getHashtagRecommendations = async (startingHashtag = '#oops') => {
+  log('getHashtagRecommendations ...')
+  writeHashtag(startingHashtag)
 }
